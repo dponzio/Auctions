@@ -1,0 +1,74 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% if watching and user.is_authenticated %}
+        <h2>{{ listing.title }} {% if listing.winner %}(CLOSED){% endif %} <a href="{% url 'unwatch' listing.id %}">Stop watching</a></h2>
+    {% elif not watching and user.is_authenticated %}
+        <h2>{{ listing.title }} {% if listing.winner %}(CLOSED){% endif %} <a href="{% url 'watch' listing.id %}">Watch item</a></h2>
+    {% else %}
+        <h2>{{ listing.title }} {% if listing.winner %}(CLOSED){% endif %} </h2>
+    {% endif %}
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <div class="listing">
+        {% if listing.winner == request.user %}
+            <p style="color:lightseagreen">You won this bid!</p>
+        {% endif %}
+        <div><img src="{{ listing.image }}" alt="{{ listing.title }}"></div>
+        {% if not listing.winner and user.is_authenticated and listing.creator != request.user%}
+            <div class="bid">
+            <form action="{% url 'bid' listing.id %}" method="post">
+                {% csrf_token %}
+                {{ bidForm }}
+                <input type="submit">
+            </form>
+            </div>
+        {% endif %}
+    </div>
+    <div class="listingDetails">
+        <hr>
+        {% if not listing.winner %}
+            <h5>Current Price</h5>
+        {% elif listing.winner %}
+            <h5>Winning Bid</h5>
+        {% endif %}
+        <ul><li>${{ listing.price }}</li></ul>
+        {% if listing.creator == request.user and not listing.winner%}
+            <form action="{% url 'close' listing.id %}" method="post">{% csrf_token %}<input type="submit" value="Close bid"></form>
+        {% endif %}
+        <h5>Description</h5>
+        <ul><li>{{ listing.description }}</li></ul>
+
+
+        <div class="commentDiv">
+            <h5>Comments</h5>
+
+            {% if comments %}
+                <ul>
+                {%  for comment in comments %}
+                    <br>
+                    <li style="color: #101034">{{ comment.body }} - by <b>{{ comment.author }}</b></li>
+                {% endfor %}
+                </ul>
+            {% elif not comments %}
+                <i>No comments posted yet</i>
+            {% endif %}
+            {% if user.is_authenticated %}
+                <form action="{% url 'comment' listing.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="textarea" name="comment_text" placeholder="Add a comment..." rows="4" cols="50">
+                    <input type="submit" value="Comment">
+                </form>
+            {% endif %}
+            <hr>
+        </div>
+
+
+        Listed on {{ listing.created }} by {{ listing.creator }}
+        <br>
+        <h6><a href="{% url 'index' %}">Back to active listings</a></h6>
+    </div>
+{% endblock %}

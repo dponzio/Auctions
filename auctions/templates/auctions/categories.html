@@ -1,0 +1,31 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categories</h2>
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <div class="grid">
+        {% for category in categories %}
+        <div class="card" style="text-align:center; ">
+            {% if category.id == 1 %}
+                <a href="{% url 'category' category.id %}"><img src="https://p.kindpng.com/picc/s/234-2344958_guitar-bass-guitar-png-icon-transparent-png.png" alt="{{ category.name }}" style="height: 230px; width: auto;"></a>
+            {% elif category.id == 2 %}
+                <a href="{% url 'category' category.id %}"><img src="https://p.kindpng.com/picc/s/722-7226601_bass-guitar-comments-cartoon-electric-guitar-transparent-hd.png" alt="{{ category.name }}" style="height: 230px; width: auto;"></a>
+            {% elif category.id == 3 %}
+                <a href="{% url 'category' category.id %}"><img src="https://p.kindpng.com/picc/s/236-2367834_clipart-guitar-pedal-hd-png-download.png" alt="{{ category.name }}" style="height: 230px; width: auto;"></a>
+            {% elif category.id == 4 %}
+                <a href="{% url 'category' category.id %}"><img src="https://p.kindpng.com/picc/s/439-4393067_amplifier-icon-hd-png-download.png" alt="{{ category.name }}" style="height: 230px; width: auto;"></a>
+            {% endif %}
+            <a href="{% url 'category' category.id %}">{{ category.name }}</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <br>
+        <h6><a href="{% url 'index' %}">Back to active listings</a></h6>
+    </div>
+{% endblock %}

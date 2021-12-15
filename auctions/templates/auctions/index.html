@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ title }}</h2>
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+
+    <div class="grid">
+        {% for listing in listings %}
+        <div class="card">
+            <a href="{% url 'listings' listing.id %}"><img src="{{ listing.image }}" alt="{{ listing.title }}" title="{{ listing.description }}" style="width:100%"></a>
+            <div class="container">
+                <h5><a href="{% url 'listings' listing.id %}">{{ listing.title }}</a></h5>
+                <p>${{ listing.price }}</p>
+                <div class="bidStatus">{% if listing.winner %}<p style="color:lightcoral">CLOSED</p>{% else %}<p style="color:lightseagreen">OPEN</p>{% endif %}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
